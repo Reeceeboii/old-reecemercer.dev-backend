@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "The backend for my personal portfolio website",
   "main": "server.js",
-  "scripts":{
+  "scripts": {
     "server": "nodemon server.js"
   },
   "repository": "https://github.com/Reeceeboii/reecemercer.dev-backend.git",
@@ -11,7 +11,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "dotenv": "^7.0.0",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "json-stringify-safe": "^5.0.1",
+    "nodemon": "^1.18.10"
   }
 }
