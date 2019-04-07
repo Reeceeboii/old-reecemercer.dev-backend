@@ -10,6 +10,8 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
+const databaseRefreshRate = process.env.DATABASE_REFRESH_RATE;
+
 // load dotenv config files if not in a production environment
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -19,10 +21,13 @@ if (process.env.NODE_ENV !== "production") {
 const username = process.env.GITHUB_USERNAME;
 const GITHUB_API_CLIENT_ID = process.env.GITHUB_API_CLIENT_ID;
 const GITHUB_API_CLIENT_SECRET = process.env.GITHUB_API_CLIENT_SECRET;
+
+// initialise MongoDB connection details
 const MONGOOSE_CONNECTION_STRING = process.env.MONGOOSE_CONNECTION_STRING;
 
 mongoose.connect(MONGOOSE_CONNECTION_STRING, { useNewUrlParser: true }).then( () => console.log("Database connected!"))
 
+// define GitHub API keys in a header const ready for use with Axios
 const axiosRequestHeaders = {
     params: {
         client_id: GITHUB_API_CLIENT_ID,
@@ -30,8 +35,27 @@ const axiosRequestHeaders = {
     }
 }
 
+/*
+remove previous repo documents from Mongo collection; call this
+before generating new documents as to prevent duplicates
+*/
+function removePreviousRepos() {
+    const repos = repoSchema.find({})
+    .then(repos => {
+        for(let repo in repos){
+            repoSchema.findByIdAndDelete(repos[repo]._id)
+            .then(doc => {
+                console.log(`Repo ID '${doc._id}' was deleted`)
+            })
+        }
+    });
+}
 
-function getMyRepos() {
+/*
+makes a fresh call to the GitHub API, and for every repo returned by the call,
+create and store a new instance of the repoSchema in the collection
+*/
+function updateRepoDocuments() {
   axios.get(`https://api.github.com/users/${username}/repos`, axiosRequestHeaders)
   .then(response => response.data)
   .then(response => {
@@ -48,7 +72,7 @@ function getMyRepos() {
           newRepo
           .save()
           .then( () => {
-              console.log(`Repo ${repo} was created`)
+              console.log(`Repo number ${repo} was created`)
           })
           .catch(err => {
               console.log(err);
@@ -57,8 +81,12 @@ function getMyRepos() {
   })
 }
 
-getMyRepos();
+function repoUpdateLogic(){
+  removePreviousRepos(); // remove previous repos before updating collection with new ones
+  updateRepoDocuments(); // query API and update Mongo collection with fresh documents
+}
 
-//setInterval(getMyRepos, 1000);
+// schedule
+setInterval(repoUpdateLogic, databaseRefreshRate);
 
 app.listen(port, () => console.log(`Server listening @${port}`));
