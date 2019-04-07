@@ -14,7 +14,7 @@
     "axios": "^0.18.0",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
-    "json-stringify-safe": "^5.0.1",
+    "mongoose": "^5.4.22",
     "nodemon": "^1.18.10"
   }
 }
