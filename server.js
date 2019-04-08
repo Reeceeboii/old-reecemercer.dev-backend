@@ -4,6 +4,8 @@ const axios = require("axios");
 const mongoose = require('mongoose');
 const repoSchema = require('./mongooseSchemas/repo');
 
+// importing my middleware
+const middleware = require('./middleware');
 
 // intialise a new express app
 const app = express();
@@ -34,6 +36,9 @@ const axiosRequestHeaders = {
         client_secret: GITHUB_API_CLIENT_SECRET
     }
 }
+
+app.use(middleware);
+
 
 /*
 remove previous repo documents from Mongo collection; call this
@@ -86,7 +91,11 @@ function repoUpdateLogic(){
   updateRepoDocuments(); // query API and update Mongo collection with fresh documents
 }
 
-// schedule
-setInterval(repoUpdateLogic, databaseRefreshRate);
+// schedule updates every 10 minutes if in production environment
+if(process.env.NODE_ENV == 'production'){
+  setInterval(repoUpdateLogic, databaseRefreshRate);
+}else{
+  console.log("not in production");
+}
 
 app.listen(port, () => console.log(`Server listening @${port}`));
