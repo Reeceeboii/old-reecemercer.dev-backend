@@ -39,6 +39,10 @@ const axiosRequestHeaders = {
 
 app.use(middleware);
 
+app.get("/", (req, res, next) => {
+  res.status(200).send("You've landed on the root path of the backend. Direct all API requests to /myRepoAPI/x")
+})
+
 
 /*
 remove previous repo documents from Mongo collection; call this
