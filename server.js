@@ -37,6 +37,12 @@ const axiosRequestHeaders = {
     }
 }
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use(middleware);
 
 app.get("/", (req, res, next) => {
@@ -80,6 +86,7 @@ function updateRepoDocuments() {
           })
           newRepo
           .save()
+          // check Heroku logs for these
           .then( () => {
               console.log(`Repo number ${repo} was created`)
           })
