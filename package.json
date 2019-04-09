@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "The backend for my personal portfolio website",
   "main": "server.js",
+  "engines": {
+    "node": "10.15.0",
+    "yarn": "1.13.0"
+  },
   "scripts": {
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
   },
   "repository": "https://github.com/Reeceeboii/reecemercer.dev-backend.git",
   "author": "Reece Mercer <reecemercer@outlook.com>",
