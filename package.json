@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "The backend for my personal portfolio website",
   "main": "server.js",
-  "engines": {
-    "node": "10.15.0",
-    "yarn": "1.13.0"
+  "engines":{
+    "node": "8.10.0",
+    "yarn": "1.15.2"
   },
   "scripts": {
     "server": "nodemon server.js",
