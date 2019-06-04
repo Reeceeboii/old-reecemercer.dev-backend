@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "The backend for my personal portfolio website",
   "main": "server.js",
-  "engines":{
+  "engines": {
     "node": "10.15.3",
     "yarn": "1.15.2"
   },
@@ -16,10 +16,12 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "axios": "^0.18.0",
+    "aws-sdk": "^2.466.0",
+    "axios": "^0.19.0",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.22",
+    "node-uuid": "^1.4.8",
     "nodemon": "^1.18.10"
   }
 }
