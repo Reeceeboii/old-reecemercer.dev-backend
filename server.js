@@ -46,8 +46,8 @@ app.use(function(req, res, next) {
 app.use(middleware);
 
 app.get("/", (req, res, next) => {
-  res.status(200).send("You've landed on the root path of the backend. Direct all API requests to /myRepoAPI/x")
-})
+  res.status(200).send('GitHub API requests: /myRepoAPI/[request] | Photography API requests: /photography/[request]')
+});
 
 
 /*
