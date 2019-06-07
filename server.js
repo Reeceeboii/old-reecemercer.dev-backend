@@ -102,7 +102,7 @@ function repoUpdateLogic(){
   updateRepoDocuments(); // query API and update Mongo collection with fresh documents
 }
 
-// schedule updates every 10 minutes if in production environment
+// schedule updates every 10 minutes if in production environment, else there is no need
 if(process.env.NODE_ENV == 'production'){
   setInterval(repoUpdateLogic, databaseRefreshRate);
 }else{
