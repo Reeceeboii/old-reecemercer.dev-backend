@@ -3,6 +3,7 @@ const router = express.Router();
 
 const AWS = require('aws-sdk');
 
+// create a new instance of the S3 service
 const s3Service = new AWS.S3({params: {Bucket: process.env.AWS_BUCKET_NAME}});
 
 // require .env file if not in production
@@ -10,7 +11,7 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-
+// set up the AWS SDK with required environment variables
 AWS.config.update({
   accessKeyID: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -27,11 +28,44 @@ function formatPublicURL(key){
 router.get("/splash-image", (req, res, next) => {
   s3Service.listObjectsV2({Prefix: 'background/_'}, (err, data) => {
     if(err){
-      console.log(err)
+      res.status(500).send({ERR :err});
     }else{
       let publicURL = formatPublicURL(data.Contents[0].Key)
-      res.status(200).send({URL:publicURL});
+      res.status(200).send({URL: publicURL});
     }
+  })
+})
+
+// return an array of 'collections' (S3 folders)
+router.get("/collection-names", (req, res, next) => {
+  s3Service.listObjectsV2((err, data) => {
+    if(err){
+      res.status(500).send({ERR: err});
+    }else{
+      // filter objects down to any object that's a folder (ends with '/') and isn't the background folder
+      data.Contents = data.Contents.filter(object => object.Key.slice(-1) === '/' && object.Key !== 'background/')
+      res.status(200).send(data.Contents);
+    }
+  })
+})
+
+
+router.get("/collection-preview/:key", (req, res, next) => {
+    // remove trailing / if present as it's not URL encoded
+    if(req.params.key.charAt(-1) === '/'){
+      req.params.key = req.params.key.slice(0, req.params.key.length -1);
+    }
+    // retrieve all object's with the key prefix, and return the first one's URL
+    s3Service.listObjectsV2({Prefix: `${req.params.key}/_`}, (err, data) => {
+      if(err){
+        res.status(500).send({ERR: err});
+      }else{
+        if(data.Contents.length === 0){
+          res.status(404).send({ERR: `404: ${req.params.key} returned 0 results`})
+        }else{
+          res.status(200).send({URL: formatPublicURL(data.Contents[0].Key)});
+        }
+      }
   })
 })
 
