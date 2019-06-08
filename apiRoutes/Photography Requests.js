@@ -25,17 +25,14 @@ function formatPublicURL(key){
   return `https://s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_BUCKET_NAME}/${key}`
 }
 
-// given the URL for a JSON description file, extract and return the contents
-function extractTextFromDescFile(key){
-  let desc;
-  axios.get(`${formatPublicURL(`${key}/desc.json`)}`)
-  .then(contents => contents.data)
-  .then(contents => contents.desc)
-  .then(contents => {desc = contents})
-
-  console.log(desc)
-  return desc
+// removes trailing / from any URL variable keys passed to it
+function formatKey(key){
+  if(key.charAt(-1) === '/'){
+    return key.slice(0, key.length -1);
+  }
+  return key;
 }
+
 
 // returns the URL for the home page's splash image. Make sure only one image is ever in the 'background' folder
 router.get("/splash-image", (req, res, next) => {
@@ -62,11 +59,19 @@ router.get("/collection-names", (req, res, next) => {
   })
 })
 
+// returns the description of a collection to be used in the collection preview
+router.get("/collection-description/:key", (req, res, next) => {
+  req.params.key = formatKey(req.params.key);
+  axios.get(formatPublicURL(`${req.params.key}/desc.json`))
+  .then(response => response.data)
+  .then(response => res.status(200).send(response))
+})
+
+
+// returns a URL to the first image in a collection to be used a preview on the collections page
 router.get("/collection-preview/:key", (req, res, next) => {
-    // remove trailing / if present as it's not URL encoded
-    if(req.params.key.charAt(-1) === '/'){
-      req.params.key = req.params.key.slice(0, req.params.key.length -1);
-    }
+    req.params.key = formatKey(req.params.key);
+
     // retrieve all object's with the key prefix, and return the first one's URL
     s3Service.listObjectsV2({Prefix: `${req.params.key}/_`}, (err, data) => {
       if(err){
@@ -77,9 +82,8 @@ router.get("/collection-preview/:key", (req, res, next) => {
         }else{
           // return URL to first image and the contents of the description file
           res.status(200).send({
-            URL: formatPublicURL(data.Contents[0].Key),
-            Desc: extractTextFromDescFile(req.params.key)
-          });
+            URL: formatPublicURL(data.Contents[0].Key)
+        });
         }
       }
   })
