@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const axios = require("axios");
 
 const AWS = require('aws-sdk');
 
@@ -22,6 +23,18 @@ AWS.config.update({
 // given an object's key, generate the public URL for it
 function formatPublicURL(key){
   return `https://s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_BUCKET_NAME}/${key}`
+}
+
+// given the URL for a JSON description file, extract and return the contents
+function extractTextFromDescFile(key){
+  let desc;
+  axios.get(`${formatPublicURL(`${key}/desc.json`)}`)
+  .then(contents => contents.data)
+  .then(contents => contents.desc)
+  .then(contents => {desc = contents})
+
+  console.log(desc)
+  return desc
 }
 
 // returns the URL for the home page's splash image. Make sure only one image is ever in the 'background' folder
@@ -49,7 +62,6 @@ router.get("/collection-names", (req, res, next) => {
   })
 })
 
-
 router.get("/collection-preview/:key", (req, res, next) => {
     // remove trailing / if present as it's not URL encoded
     if(req.params.key.charAt(-1) === '/'){
@@ -63,7 +75,11 @@ router.get("/collection-preview/:key", (req, res, next) => {
         if(data.Contents.length === 0){
           res.status(404).send({ERR: `404: ${req.params.key} returned 0 results`})
         }else{
-          res.status(200).send({URL: formatPublicURL(data.Contents[0].Key)});
+          // return URL to first image and the contents of the description file
+          res.status(200).send({
+            URL: formatPublicURL(data.Contents[0].Key),
+            Desc: extractTextFromDescFile(req.params.key)
+          });
         }
       }
   })
