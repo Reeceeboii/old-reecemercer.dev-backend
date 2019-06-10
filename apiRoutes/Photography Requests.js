@@ -67,6 +67,28 @@ router.get("/collection-description/:key", (req, res, next) => {
   .then(response => res.status(200).send(response))
 })
 
+// returns URLs for all half res images in a collection
+router.get("/collection-half-res/:key", (req, res, next) => {
+  req.params.key = formatKey(req.params.key);
+
+  s3Service.listObjectsV2({Prefix: `${req.params.key}/_`}, (err, data) => {
+    if(err){
+      res.status(500).send({ERR: err});
+    }else{
+      if(data.Contents.length === 0){
+        res.status(404).send({ERR: `404: ${req.params.key} returned 0 results`})
+      }else{
+        let response = { }
+        data.Contents = data.Contents.filter(object => object.Key.includes('-half'))
+        data.Contents.forEach((object, i) => {
+          response[i] = formatPublicURL(object.Key);
+        })
+
+        res.status(200).send(response)
+      }
+    }
+  })
+})
 
 // returns a URL to the first image in a collection to be used a preview on the collections page
 router.get("/collection-preview/:key", (req, res, next) => {
