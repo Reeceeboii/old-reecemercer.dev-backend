@@ -78,10 +78,11 @@ router.get("/collection-half-res/:key", (req, res, next) => {
       if(data.Contents.length === 0){
         res.status(404).send({ERR: `404: ${req.params.key} returned 0 results`})
       }else{
-        let response = { }
+        let response = [ ]
         data.Contents = data.Contents.filter(object => object.Key.includes('-half'))
         data.Contents.forEach((object, i) => {
-          response[i] = formatPublicURL(object.Key);
+          photo = {number: i, url: formatPublicURL(object.Key)}
+          response.push(photo)
         })
 
         res.status(200).send(response)
