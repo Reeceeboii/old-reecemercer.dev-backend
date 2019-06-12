@@ -67,8 +67,8 @@ router.get("/collection-description/:key", (req, res, next) => {
   .then(response => res.status(200).send(response))
 })
 
-// returns URLs for all half res images in a collection
-router.get("/collection-half-res/:key", (req, res, next) => {
+// returns URLs for all images in a collection - both half and full res versions
+router.get("/collection-contents/:key", (req, res, next) => {
   req.params.key = formatKey(req.params.key);
 
   s3Service.listObjectsV2({Prefix: `${req.params.key}/_`}, (err, data) => {
@@ -81,7 +81,8 @@ router.get("/collection-half-res/:key", (req, res, next) => {
         let response = [ ]
         data.Contents = data.Contents.filter(object => object.Key.includes('-half'))
         data.Contents.forEach((object, i) => {
-          photo = {number: i, url: formatPublicURL(object.Key)}
+          photo = {number: i, halfurl: formatPublicURL(object.Key),
+                  fullurl: formatPublicURL(object.Key).replace('-half', '')}
           response.push(photo)
         })
 
