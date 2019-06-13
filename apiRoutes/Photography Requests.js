@@ -81,8 +81,11 @@ router.get("/collection-contents/:key", (req, res, next) => {
         let response = [ ]
         data.Contents = data.Contents.filter(object => object.Key.includes('-half'))
         data.Contents.forEach((object, i) => {
-          photo = {number: i, halfurl: formatPublicURL(object.Key),
-                  fullurl: formatPublicURL(object.Key).replace('-half', '')}
+          photo = {
+            number: i+1,
+            halfurl: formatPublicURL(object.Key),
+            fullurl: formatPublicURL(object.Key).replace('-half', '')
+          }
           response.push(photo)
         })
 
