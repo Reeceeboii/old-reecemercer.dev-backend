@@ -79,12 +79,12 @@ router.get("/collection-contents/:key", (req, res, next) => {
         res.status(404).send({ERR: `404: ${req.params.key} returned 0 results`})
       }else{
         let response = [ ]
-        data.Contents = data.Contents.filter(object => object.Key.includes('-half'))
+        data.Contents = data.Contents.filter(object => object.Key.includes('-compressed'))
         data.Contents.forEach((object, i) => {
           photo = {
             number: i+1,
             halfurl: formatPublicURL(object.Key),
-            fullurl: formatPublicURL(object.Key).replace('-half', '')
+            fullurl: formatPublicURL(object.Key).replace('-compressed', '')
           }
           response.push(photo)
         })
