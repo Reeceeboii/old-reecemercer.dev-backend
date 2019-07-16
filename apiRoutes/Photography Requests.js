@@ -116,6 +116,37 @@ router.get("/collection-preview/:key", (req, res, next) => {
   })
 })
 
+router.get("/S3-server-stats", (req, res, next) => {
+    s3Service.listObjectsV2((err, data) => {
+        if(err){
+            res.status(500).send({ERR: err});
+        }else{
+            // get the number of collections
+            let collections = data.Contents.filter(object => object.Key.slice(-1) === '/' && object.Key !== 'background/');
+            let totalCollections = collections.length;
+
+            // get the number of images
+            let images = data.Contents.filter(object => object.Key.includes(".JPG"));
+            let totalImages = images.length
+
+            // sum the size of each images and convert to MiB and GiB from byte total
+            let totalBytes = 0;
+            images.forEach(image => {
+                totalBytes += image.Size
+            })
+            let KiB = totalBytes / 1024;
+            let MiB = KiB / 1024;
+            let GiB = MiB / 1024;
+
+            res.status(200).send({
+                imageCount: totalImages,
+                storageMiB: MiB.toFixed(2), // rounding to 2 decimal places
+                storageGiB: GiB.toFixed(2),
+                collectionCount: totalCollections
+            });
+        }
+    })
+})
 
 
 
