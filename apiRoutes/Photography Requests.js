@@ -107,6 +107,7 @@ router.get("/collection-preview/:key", (req, res, next) => {
         if(data.Contents.length === 0){
           res.status(404).send({ERR: `404: ${req.params.key} returned 0 results`})
         }else{
+            data.Contents = data.Contents.filter(object => object.Key.includes('preview') && object.Key.includes('preview'))
           // return URL to first image and the contents of the description file
           res.status(200).send({
             URL: formatPublicURL(data.Contents[0].Key)
