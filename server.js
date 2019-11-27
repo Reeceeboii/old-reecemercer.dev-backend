@@ -27,7 +27,7 @@ const GITHUB_API_CLIENT_SECRET = process.env.GITHUB_API_CLIENT_SECRET;
 // initialise MongoDB connection details
 const MONGOOSE_CONNECTION_STRING = process.env.MONGOOSE_CONNECTION_STRING;
 
-mongoose.connect(MONGOOSE_CONNECTION_STRING, { useNewUrlParser: true }).then( () => console.log("Database connected!"))
+mongoose.connect(MONGOOSE_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true }).then( () => console.log("Database connected!"))
 
 // define GitHub API keys in a header const ready for use with Axios
 const axiosRequestHeaders = {

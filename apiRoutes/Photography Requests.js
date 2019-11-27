@@ -4,19 +4,19 @@ const axios = require("axios");
 
 const AWS = require('aws-sdk');
 
-// create a new instance of the S3 service
-const s3Service = new AWS.S3({params: {Bucket: process.env.AWS_BUCKET_NAME}});
-
 // require .env file if not in production
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
+// create a new instance of the S3 service
+const s3Service = new AWS.S3({params: {Bucket: process.env.AWS_BUCKET_NAME}});
+
 // set up the AWS SDK with required environment variables
 AWS.config.update({
   accessKeyID: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
+  region: process.env.AWS_REGION,
 })
 
 
@@ -54,6 +54,14 @@ router.get("/collection-names", (req, res, next) => {
     }else{
       // filter objects down to any object that's a folder (ends with '/') and isn't the background folder
       data.Contents = data.Contents.filter(object => object.Key.slice(-1) === '/' && object.Key !== 'background/')
+      data.Contents.forEach(collection => {
+        date = new Date(collection.LastModified);
+        collection.Key = collection.Key.slice(0, -1);
+        collection.LastModified = date.toLocaleString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' });
+        delete collection.Size; 
+        delete collection.ETag; 
+        delete collection.StorageClass; 
+      });
       res.status(200).send(data.Contents);
     }
   })
@@ -82,7 +90,6 @@ router.get("/collection-contents/:key", (req, res, next) => {
         data.Contents = data.Contents.filter(object => object.Key.includes('-compressed'))
         data.Contents.forEach((object, i) => {
           photo = {
-            number: i+1,
             halfurl: formatPublicURL(object.Key),
             fullurl: formatPublicURL(object.Key).replace('-compressed', '')
           }
