@@ -1,6 +1,6 @@
 const express = require("express");
 const axios = require("axios");
-
+const path = require("path");
 const mongoose = require('mongoose');
 const repoSchema = require('./mongooseSchemas/repo');
 
@@ -43,11 +43,20 @@ app.use(function(req, res, next) {
   next();
 });
 
+axios.get(`https://api.github.com/user/orgs`, axiosRequestHeaders)
+.then(response => response.data)
+.then(response => console.log(response))
+
+
 app.use(middleware);
 
 app.get("/", (req, res, next) => {
-  res.status(200).send('GitHub API requests: /myRepoAPI/[request] | Photography API requests: /photography/[request]')
+  res.status(200).sendfile(path.join(__dirname + '/public/index.html'));
 });
+
+app.get("/download/postmanDev", (req, res, next) => {
+  res.status(200).download(path.join(__dirname + '/public/reecemercer.dev Backend Postman Collection.json'))
+})
 
 
 /*

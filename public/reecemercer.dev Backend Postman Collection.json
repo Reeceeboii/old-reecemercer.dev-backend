@@ -1,0 +1,181 @@
+{
+	"info": {
+		"_postman_id": "c744d172-2d47-499c-9470-8639c93e16e3",
+		"name": "reecemercer.dev Backend ",
+		"description": "A Postman collection of API endpoints for aiding testing and development of the backend for reecemercer.dev",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/myRepoAPI/get-repos-from-db/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/myRepoAPI/get-repos-from-db",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"myRepoAPI",
+						"get-repos-from-db"
+					]
+				},
+				"description": "Get the list of repositories currently stored in the MongoDB instance"
+			},
+			"response": []
+		},
+		{
+			"name": "/myRepoAPI/language-stats/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/myRepoAPI/language-stats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"myRepoAPI",
+						"language-stats"
+					]
+				},
+				"description": "Get a mapping of languages to their occurences in public repositories"
+			},
+			"response": []
+		},
+		{
+			"name": "/photography/splash-image/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/photography/splash-image",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"photography",
+						"splash-image"
+					]
+				},
+				"description": "Get a URL for the splash image shown on the home page of my photography site"
+			},
+			"response": []
+		},
+		{
+			"name": "/photography/collection-names",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/photography/collection-names",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"photography",
+						"collection-names"
+					]
+				},
+				"description": "Get a list of names and creation dates for every image collecion stored on the AWS S3 Bucket"
+			},
+			"response": []
+		},
+		{
+			"name": "/photography/collection-description/:key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/photography/collection-description/Cats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"photography",
+						"collection-description",
+						"Cats"
+					]
+				},
+				"description": "Replace :key with a valid collection name to receive a description of that collection."
+			},
+			"response": []
+		},
+		{
+			"name": "/photography/collection-contents/:key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/photography/collection-contents/Cats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"photography",
+						"collection-contents",
+						"Cats"
+					]
+				},
+				"description": "Replace :key with a valid collection name to receive an array of URLs for images in that collection."
+			},
+			"response": []
+		},
+		{
+			"name": "/photography/collection-preview/:key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/photography/collection-preview/Cats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"photography",
+						"collection-preview",
+						"Cats"
+					]
+				},
+				"description": "Replace :key with a valid collection name to receive a URL to the image used in the preview of that collection."
+			},
+			"response": []
+		},
+		{
+			"name": "/photography/S3-server-stats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/photography/S3-server-stats",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"photography",
+						"S3-server-stats"
+					]
+				},
+				"description": "Receive some stats regarding the data stored in the AWS S3 Bucket."
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
