@@ -7,8 +7,9 @@ const repoSchema = require('./mongooseSchemas/repo');
 // importing my middleware
 const middleware = require('./middleware');
 
-// intialise a new express app
+// intialise a new express app and set up view engine
 const app = express();
+app.set("view engine", "ejs");
 
 const port = process.env.PORT || 5000;
 
@@ -37,6 +38,7 @@ const axiosRequestHeaders = {
     }
 }
 
+// CORS allowances
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -46,7 +48,10 @@ app.use(function(req, res, next) {
 app.use(middleware);
 
 app.get("/", (req, res, next) => {
-  res.status(200).sendfile(path.join(__dirname + '/public/index.html'));
+  res.render("pages/index", {
+    env: process.env.NODE_ENV == "production" ? "Production" : "Development", 
+    noticeColour: process.env.NODE_ENV == "production" ? "alert alert-success" : "alert alert-warning"
+  });
 });
 
 app.get("/download/postmanDev", (req, res, next) => {
