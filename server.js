@@ -43,11 +43,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-axios.get(`https://api.github.com/user/orgs`, axiosRequestHeaders)
-.then(response => response.data)
-.then(response => console.log(response))
-
-
 app.use(middleware);
 
 app.get("/", (req, res, next) => {
