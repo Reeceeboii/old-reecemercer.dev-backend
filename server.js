@@ -50,13 +50,21 @@ app.use(middleware);
 app.get("/", (req, res, next) => {
   res.render("pages/index", {
     env: process.env.NODE_ENV == "production" ? "Production" : "Development", 
-    noticeColour: process.env.NODE_ENV == "production" ? "alert alert-success" : "alert alert-warning"
+    envStatus: process.env.NODE_ENV == "production" ? "live" : "local", 
+    noticeColour: process.env.NODE_ENV == "production" ? "alert alert-success" : "alert alert-warning",
+    path: req.originalUrl
   });
 });
 
 app.get("/download/postmanDev", (req, res, next) => {
   res.status(200).download(path.join(__dirname + '/public/reecemercer.dev Backend Postman Collection.json'))
 })
+
+app.get('*', (req, res) => {
+  res.render("pages/404", {
+    path: req.originalUrl
+  })
+});
 
 
 /*

@@ -1,20 +1,8 @@
 # reecemercer.dev-backend
-This is the backend for my personal website. In its current state, it is only responsible for the content listed on https://reecemercer.dev/GitHubViewer (my 'GitHub viewer').
+## This is currently live on a Heroku container - the root contains a webpage documenting the endpoints - view it [here](https://rm-backend-services.herokuapp.com/).
 
- I am currently writing more backend services for a photography site I'm working on as a hobby extension of my main website.
+This is the backend for my websites, written using NodeJS utilising the Express.js server framework. It is responsible for dynamic content served on my [personal website](https://reecemercer.dev) and my [photography site](https://photography.reecemercer.dev). It provides integrations to a MongoDB instance and an Amazon Web Services S3 Bucket such that the frontends of these two sites can easily have access to the data they need.
 
-This page has the aim of providing a one click solution to all of my public repositories currently listed on GitHub. My profile has the pinned repositories but this section can only show 6 of the however many repositories I currently have public. It also doesn't do things such as provide language statistics (i.e. how many of my current public repositories use Java? How does this number stack up to the number that use Python? etc...). You could argue that just clicking 'repositories' will take you right to it, but this still misses some insights into the work I've created that I'd like to have public.
+The server is on a loop, mirroring my public GitHub information from the [GitHub API](https://developer.github.com/v3/) into the MongoDB instance after some arbitrary time period that I can pass to the Node runtime as an environment variable. All requests from the frontend of my personal site are referred to the DB rather than the GitHub API. This allows me to not be limited by the GitHub API request limit. This server uses authorised keys so this isn't really an issue but there's nothing wrong with designing with scalability in mind :)
 
-It was this kind of thing that I wanted to have a single page on my website take care of. It is currently in its first kind of iteration, and there are many improvements (both in terms of functionality and the visuals) that I plan to make in the near future. The visuals side of things is purely frontend so it isn't much of a hassle, but the backend is where I interface with the GitHub API, and also expose my own API for the frontend to get more specific data from - so that's where more thought is needed. That brings me nicely onto the next thing I want to talk about; that being exactly how the backend works and provides the frontend with the data it needs.
-
-### Basic architecture
- * **Frontend hosted on Netlify**
- * **Backend hosted on Heroku**
- * **MongoDB instance hosted on MongoDB Atlas** (for GitHub API only)
-
-1. Every 10 minutes, the backend server polls the GitHub API for data.
-2. The data received from GitHub is then stored in the MongoDB instance, replacing and updating whatever was there previously.
-3. Every visit to the GitHub Viewer page on *my site* retrieves its data from Mongo rather than GitHub.
-  * This stops the site from unnecessarily overloading GitHub with requests if I ever suddenly get a spike in visitors or if someone refreshes the page a few times.
-
-What this means is that if anything ever changes on my GitHub, it will be less than 10 minutes until that same data is mirrored in a way I designed on my personal site, and this all happens passively without me clicking a thing.
+In terms of the S3 Bucket, the server does nothing more than receive a list of objects in storage and generate their corresponding public URLs that it then forwards to the frontend to render.
